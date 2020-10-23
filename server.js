@@ -5,6 +5,6 @@ const app = express();
 const PORT = process.env.PORT || 6005;
 
 // connect db
-connectDB();
+connectDB();    
 
 app.listen(PORT, () => console.log(`Application running on ${PORT}`) );
