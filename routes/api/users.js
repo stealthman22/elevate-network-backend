@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../../models/User')
-const bcrypt = require('bcryptjs')
+const User = require('../../models/User');
+const bcrypt = require('bcryptjs');
+const config = require('config')
+const jwt = require('jsonwebtoken')
 // const gravatar = require('gravatar')
 const {check, validationResult} = require
 ('express-validator')
@@ -17,7 +19,7 @@ router.post('/', [
 check('name', 'Please enter a valid name').not().isEmpty(),
 check('email', 'Please enter a valid email').isEmail(),
 check('password', 'Please enter a password of not less than 8 characters').isLength({min:8}),
-check('role', 'Please choose what role applies to you').not().isEmpty()], 
+check('role', 'Please select how you want to be registered').not().isEmpty()], 
 // req, res cycle
 async (req, res) => {
     const errors = validationResult(req)
@@ -25,7 +27,7 @@ async (req, res) => {
     if(!errors.isEmpty()) {
 return res.status(400).json({errors: errors.array()})
  }
-//  destructure req body
+//  destructor req body
 const {name, email, password, role} = req.body
     try {
         // check if user already exists
@@ -42,10 +44,20 @@ const {name, email, password, role} = req.body
        })
     //    Encrypt password
     const salt = await bcrypt.genSalt(10);
-    user.password  = await bcrypt.hash(password, salt)
-    await user.save()
+    user.password  = await bcrypt.hash(password, salt);
+    await user.save();
 
-    res.send('User route')
+    // return jwt
+    const payload = await {
+        user: {
+            id: user.id
+        }
+    }
+// jwt config
+jwt.sign(payload, config.get('jwtSecret'), {expiresIn:3600}, (error, token) => {
+    if (error) throw error 
+    res.json({token})
+})
     } catch (error) {
         console.error(error.message)
         res.status(500).send('Server Error')
