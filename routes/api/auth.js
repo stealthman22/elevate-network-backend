@@ -7,10 +7,12 @@ const User = require('../../models/User')
 const auth = require('../../middleware/authMiddleware');
 const config = require('config')
 
-//  @route  GET api/auth
-//  @desc   Verify JWT and return user data
-//  @access Public
 
+// @route    GET api/auth
+// @desc     Get user object 
+// @access  Public 
+
+// return user's data if token is valid
 router.get('/', auth, async(req, res) => {
     try {
         const user = await User.findById(req.user.id).select('-password')
@@ -52,20 +54,16 @@ try {
            id:user.id
        }
     }
-    // authenticate token
+    // if user login is successful, return token
     jwt.sign(payload, config.get('jwtSecret'),
-    {expiresIn:3600}, (err, token) => {
+    {expiresIn:3600}, (error, token) => {
         if (error) throw error
-        res.json({token})
+      return res.json({token})
     })
-    // test return value
-    res.send('Logged In User')
 } catch (error) {
     console.error(error.message);
     res.status(500).send('Server Error')
 }
 })
-
-
 
 module.exports = router

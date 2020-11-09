@@ -7,7 +7,7 @@ const app = express();
 // connect db
 connectDB();    
 
-// bodyparser
+// bodyparser for request and body validation
 app.use(express.json({extended: false}))
 
 // Define Routes
