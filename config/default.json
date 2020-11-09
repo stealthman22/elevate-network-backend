@@ -1,4 +1,4 @@
 {
-    "mongoURI" : "mongodb://localhost/elevateNetworkhq",
-    "jwtSecret":  "SilentEntry"
+    "mongoURI" : "mongodb://localhost/elevateNetworkHq",
+    "jwtSecret":  "SilentEntry5000"
 }

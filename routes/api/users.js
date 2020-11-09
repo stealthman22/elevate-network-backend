@@ -9,8 +9,8 @@ const {check, validationResult} = require
 ('express-validator')
 
 // @route POST api/users
-// @desc Register  user route
-// @access  Public
+// @desc Register user route
+// @access  Private
 
 // perform info validation 
 
@@ -19,7 +19,8 @@ router.post('/', [
 check('name', 'Please enter a valid name').not().isEmpty(),
 check('email', 'Please enter a valid email').isEmail(),
 check('password', 'Please enter a password of not less than 8 characters').isLength({min:8}),
-check('role', 'Please select how you want to be registered').not().isEmpty()], 
+check('status', 'Please select how you want to be registered').not().isEmpty()
+], 
 // req, res cycle
 async (req, res) => {
     const errors = validationResult(req)
@@ -28,7 +29,7 @@ async (req, res) => {
 return res.status(400).json({errors: errors.array()})
  }
 //  destructor req body
-const {name, email, password, role} = req.body
+const {name, email, password, status} = req.body
     try {
         // check if user already exists
        let user = await User.findOne({email})
@@ -40,7 +41,7 @@ const {name, email, password, role} = req.body
            name,
            email,
            password,
-           role
+           status
        })
     //    Encrypt password
     const salt = await bcrypt.genSalt(10);
@@ -54,14 +55,20 @@ const {name, email, password, role} = req.body
         }
     }
 // jwt config
+// change all values of jwt expiresIn option
 jwt.sign(payload, config.get('jwtSecret'), {expiresIn:3600}, (error, token) => {
     if (error) throw error 
     res.json({token})
 })
     } catch (error) {
         console.error(error.message)
-        res.status(500).send('Server Error')
+        res.status(500).send('This is our fault, not yours')
     }
 })
+
+
+// @route POST api/users
+// @desc Register user route
+// @access  Private
 
 module.exports = router
