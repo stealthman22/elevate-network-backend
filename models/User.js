@@ -19,7 +19,7 @@ status: {
     type: String,
     enum: ['mentee', 'mentor', 'partner'],  
 },
-date: {
+dateCreated: {
     type: Date,
     default: Date.now
 }
