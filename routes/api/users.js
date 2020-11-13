@@ -16,7 +16,7 @@ const {check, validationResult} = require
 
 // router.get('/', (req, res) => res.send('User Route') )
 router.post('/', [
-check('name', 'Please enter a valid name').not().isEmpty(),
+check('username', 'Please enter a valid username').not().isEmpty(),
 check('email', 'Please enter a valid email').isEmail(),
 check('password', 'Please enter a password of not less than 8 characters').isLength({min:8}),
 check('status', 'Please select how you want to be registered').not().isEmpty()
@@ -29,7 +29,7 @@ async (req, res) => {
 return res.status(400).json({errors: errors.array()})
  }
 //  destructor req body
-const {name, email, password, status} = req.body
+const {username, email, password, status} = req.body
     try {
         // check if user already exists
        let user = await User.findOne({email})
@@ -38,7 +38,7 @@ const {name, email, password, status} = req.body
        }
     //    create new user in db
        user = new User({
-           name,
+           username,
            email,
            password,
            status

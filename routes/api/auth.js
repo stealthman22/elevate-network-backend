@@ -46,8 +46,8 @@ try {
     if(!isPwdMatch) {
         return res.status(400).json({msg: 'Invalid Credentials'})
     }
-    // if ispwdmatch passes
 
+    // if ispwdmatch passes
     // create jwt payload
     const payload = await {
        user: {
