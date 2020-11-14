@@ -15,9 +15,10 @@ const UserSchema = new mongoose.Schema({
       type: String,
       required: true
 },
-status: {
+role: {
     type: String,
     enum: ['mentee', 'mentor', 'partner'],  
+    required: true,
 },
 dateCreated: {
     type: Date,
