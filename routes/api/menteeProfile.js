@@ -1,47 +1,65 @@
 const express = require('express');
-const router = express.Router()
+const router = express.Router();
 const config = require('config');
-const auth = require('../../middleware/authMiddleware');
+// validator
 const {check, validationResult} = require('express-validator');
+// auth middleware
+const auth = require('../../middleware/authMiddleware');
 
-// pull in schemas
-const Users = require('../../models/User');
-const MenteeProile = require('../../models/MenteeProfile');
-// const MentorProfile = require('../../models/MentorProfile');
-// const PartnerProfile = require('../../models/PartnerProfile')
+// db collections
+const MenteeProfile = require('../../models/MenteeProfile');
+const User = require('../../models/User');
 
+// fetch profile object
 
-// @route   Get api/profile/me
-// @desc    Get  current user profile
-// @access  Private : (  auth needed for this route) 
-router.get('/me', auth, async (req, res) => {
+      // check if we have to change profile router
+    //   router.use( async (function shouldRouterChange(req, res, next) {
+    //     let userRole = await Mentee.findOne({status:req.user.role});
     
-    try {
-        // check if there is profile for user in db
-        // if (req.user.role === 'mentee') { }
-        
-        let userRole = req.user.role;
-        if (userRole === 'mentee') {
-            const menteeProfile = await MenteeProfile.findOne({user:req.user.id});
-            if(!menteeProfile) {
-                return res.status(400).json({msg:'Hello Mentee, you are yet to create a Profile'});
-                
-            }
-            res.json(menteeProfile)
+    //     // conditional
+    //     if (userRole==='mentor') {
+    //         return next('router')
+    //     }
+    //     return next()
+    // }));
+
+    async function shouldRouterChange(req, res, next) {
+
+        try {
+            let userRole = await MenteeProfile.findOne({user:req.user.role });
+            // conditional
+            console.log(userRole)
+            if (userRole==='mentor') {
+                return next('router')
+           }
+             return next()
+        } catch (error) {
+            console.error(error.message)
+            res.status(500).json({msg: 'Server Error'})
         }
-      
-        // get profile if found
+        
+    } 
+    
+    router.use(auth, shouldRouterChange);
+    // router.use(  function shouldRouterChange(req, res, next) {
+
+    // });  
+
+// @route   GET api/menteeProfile/me
+// @desc    GET current user profile
+// @access  Private 
+router.get('/me', auth, async (req, res) => {
+    try {
+        // check if profile exists
+        const menteeProfile = await MenteeProfile.findOne({user:req.user.id});
+        if(!menteeProfile) {
+            return res.status(400).json({msg: 'Hello Mentee, You have not created a profile'})
+        }
+        res.json(menteeProfile)
     } catch (error) {
         console.error(error.message);
-        res.status(500).json({msg:'This is our fault, not yours'})
+        res.status(500).json({msg:'This is our fault not yours'})
     }
+})
 
-});
-
-
-module.exports = router
-
-
-
-
-
+module.exports= router;
