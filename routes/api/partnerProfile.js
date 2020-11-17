@@ -10,6 +10,9 @@ const auth = require('../../middleware/authMiddleware');
 const PartnerProfile = require('../../models/PartnerProfile');
 const User = require('../../models/User');
 
+
+
+
 // @route   GET api/PartnerProfile/me
 // @desc    GET current user profile
 // @access  Private 

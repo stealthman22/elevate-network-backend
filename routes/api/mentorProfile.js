@@ -11,24 +11,24 @@ const MentorProfile = require('../../models/MentorProfile');
 const User = require('../../models/User');
 
    // check if we have to change profile router to partner
-   async function shouldRouterChange(req, res, next) {
+//    async function shouldRouterChange(req, res, next) {
 
-    try {
-        let userRole = await MenteeProfile.findOne({user:req.user.role});
-        // conditional
+//     try {
+//         let userRole = await MenteeProfile.findOne({user:req.user.role});
+//         // conditional
        
-        if (userRole==='partner') {
-            return next('router')
-       }
-         return next()
-    } catch (error) {
-        console.error(error.message)
-        res.status(500).json({msg: 'Server Error'})
-    }
+//         if (userRole==='partner') {
+//             return next('router')
+//        }
+//          return next()
+//     } catch (error) {
+//         console.error(error.message)
+//         res.status(500).json({msg: 'Server Error'})
+//     }
     
-} 
+// } 
 
-router.use(auth, shouldRouterChange);
+// router.use(auth, shouldRouterChange);
 
 
 
