@@ -4,7 +4,7 @@ const app = express();
 
 
 
-// connect db
+// connect db`
 connectDB();    
 
 // bodyparser for request and body validation
@@ -13,7 +13,7 @@ app.use(express.json({extended: false}))
 // Define Routes
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/auth', require('./routes/api/auth'));
-app.use('/api/menteeProfile', require('./routes/api/menteeProfile'));
+app.use('/api/profilesRouter', require('./routes/api/profilesRouter'));
 
 
 
