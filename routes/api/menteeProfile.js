@@ -23,35 +23,48 @@ const User = require('../../models/User');
     //     return next()
     // }));
 
-    async function shouldRouterChange(req, res, next) {
+    // async function shouldRouterChange(req, res, next) {
 
-        try {
-            let userRole = await MenteeProfile.findOne({user:req.user.role });
-            // conditional
-            console.log(userRole)
-            if (userRole==='mentor') {
-                return next('router')
-           }
-             return next()
-        } catch (error) {
-            console.error(error.message)
-            res.status(500).json({msg: 'Server Error'})
-        }
+    //     try {
+    //         let userRole = await MenteeProfile.findOne({user:req.user.id}).populate('user', ['role']);
+    //         // conditional
+    //        console.log(userRole)
+    //         if (userRole==='mentor') {
+    //             return next('router')
+    //        }
+    //          return next()
+    //     } catch (error) {
+    //         console.error(error.message)
+    //         res.status(500).json({msg: 'Server Error'})
+    //     }
         
-    } 
+    // } 
     
-    router.use(auth, shouldRouterChange);
-    // router.use(  function shouldRouterChange(req, res, next) {
+    // router.use(auth, shouldRouterChange);
+    // router.use( );  
 
-    // });  
+    // async function shouldRouterChange(req, res, next) {
+    //     let userRole = await User.findOne({user:req.role}).select('-password');
+    //     console.log(userRole)
+    //     if ( userRole === 'mentor') {
+    //         return next('router');
+    //     }
+    //     return next();
+    // }
+     function shouldRouterChange(req, res, next) {
+        if (req.user.role === 'mentor') {
+            return next('router');
+        }
+        return next();
+    }
 
 // @route   GET api/menteeProfile/me
 // @desc    GET current user profile
 // @access  Private 
-router.get('/me', auth, async (req, res) => {
+router.get('/me', [auth, shouldRouterChange], async (req, res) => {
     try {
         // check if profile exists
-        const menteeProfile = await MenteeProfile.findOne({user:req.user.id});
+        const menteeProfile = await MenteeProfile.findOne({user:req.user.id}).populate('user', ['role']);
         if(!menteeProfile) {
             return res.status(400).json({msg: 'Hello Mentee, You have not created a profile'})
         }
