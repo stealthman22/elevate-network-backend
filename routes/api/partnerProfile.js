@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const config = require('config');
+
 // validator
 const {check, validationResult} = require('express-validator');
-// auth middleware
+
+// middlewares
 const auth = require('../../middleware/authMiddleware');
+
 
 // db collections
 const PartnerProfile = require('../../models/PartnerProfile');

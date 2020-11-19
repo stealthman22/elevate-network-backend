@@ -51,7 +51,8 @@ try {
     // create jwt payload
     const payload = await {
        user: {
-           id:user.id
+           id:user.id,
+           role:user.role
        }
     }
     // if user login is successful, return token

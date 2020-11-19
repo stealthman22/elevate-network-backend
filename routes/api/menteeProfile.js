@@ -1,10 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const config = require('config');
+
 // validator
 const {check, validationResult} = require('express-validator');
-// auth middleware
+
+//  middlewares
 const auth = require('../../middleware/authMiddleware');
+const mentorChange = require('../../middleware/mentorProfileMiddleware');
 
 // db collections
 const MenteeProfile = require('../../models/MenteeProfile');
@@ -51,20 +54,24 @@ const User = require('../../models/User');
     //     }
     //     return next();
     // }
-     function shouldRouterChange(req, res, next) {
-        if (req.user.role === 'mentor') {
-            return next('router');
-        }
-        return next();
-    }
+
+
+    //  function shouldRouterChange(req, res, next) {
+    //     if (req.user.role === 'mentor') {
+    //         return next('router');
+    //     }
+    //     return next();
+    // }
+
+
 
 // @route   GET api/menteeProfile/me
 // @desc    GET current user profile
 // @access  Private 
-router.get('/me', [auth, shouldRouterChange], async (req, res) => {
+router.get('/me', [auth, mentorChange], async (req, res) => {
     try {
         // check if profile exists
-        const menteeProfile = await MenteeProfile.findOne({user:req.user.id}).populate('user', ['role']);
+        const menteeProfile = await MenteeProfile.findOne({user:req.user.id})
         if(!menteeProfile) {
             return res.status(400).json({msg: 'Hello Mentee, You have not created a profile'})
         }
@@ -75,4 +82,4 @@ router.get('/me', [auth, shouldRouterChange], async (req, res) => {
     }
 })
 
-module.exports= router;
+module.exports = router;

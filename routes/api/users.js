@@ -52,7 +52,8 @@ const {username, email, password,role} = req.body
     // return jwt
     const payload = await {
         user: {
-            id: user.id
+            id: user.id,
+            role: user.role
         }
     }
 // jwt config
