@@ -57,7 +57,7 @@ try {
     }
     // if user login is successful, return token
     jwt.sign(payload, config.get('jwtSecret'),
-    {expiresIn:3600}, (error, token) => {
+    {expiresIn:36000}, (error, token) => {
         if (error) throw error
       return res.json({token})
     })

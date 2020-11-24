@@ -8,6 +8,7 @@ const {check, validationResult} = require('express-validator');
 //  middlewares
 const auth = require('../../middleware/authMiddleware');
 const mentorChange = require('../../middleware/mentorProfileMiddleware');
+// const partnerChange =  require('../../middleware/partnerProfileMiddleware')
 
 // db collections
 const MenteeProfile = require('../../models/MenteeProfile');
@@ -68,7 +69,7 @@ const User = require('../../models/User');
 // @route   GET api/menteeProfile/me
 // @desc    GET current user profile
 // @access  Private 
-router.get('/me', [auth, mentorChange], async (req, res) => {
+router.get('/me', [auth, mentorChange,], async (req, res) => {
     try {
         // check if profile exists
         const menteeProfile = await MenteeProfile.findOne({user:req.user.id})
