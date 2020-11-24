@@ -84,3 +84,5 @@ router.get('/me', [auth, mentorChange,], async (req, res) => {
 })
 
 module.exports = router;
+
+console.log(router)

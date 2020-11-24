@@ -15,12 +15,12 @@ function changeToMentorProfile(req, res, next) {
         // decode token
         const decoded = jwt.verify(token, config.get('jwtSecret'));
         // set role to the same value as in the request
-        req.user.role = decoded.user.role;
+       const role =  req.user.role = decoded.user.role;
         // check if role is mentor
-        if(decoded.user.role === 'mentor') {
+        if(role === 'mentor') {
             return next('router')
         }
-        next()
+       return next()
     } catch (error) {
         res.status(401).json({msg: 'Wrong token, authentication failed'})
     }

@@ -30,5 +30,4 @@ router.get('/me', [auth, partnerChange ], async (req, res) => {
     }
 })
 
-
 module.exports= router;

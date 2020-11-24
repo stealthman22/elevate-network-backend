@@ -14,11 +14,12 @@ function changeToPartnerProfile(req, res, next) {
     try {
         // decode token
         const decoded = jwt.verify(token, config.get('jwtSecret'));
-        req.user.role === decoded.user.role;
+       const role =  req.user.role === decoded.user.role;
         //  check if role is mentor
-        if( decoded.user.role === 'partner' ) {
+        if( role === 'partner') {
             return next('router');
         }
+        return next()
     } catch (error) {
         return res.status(401).json({msg: 'Wrong token, authentication failed'})
     }
