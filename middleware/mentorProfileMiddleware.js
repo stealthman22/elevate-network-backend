@@ -20,7 +20,7 @@ function changeToMentorProfile(req, res, next) {
         if(decoded.user.role === 'mentor') {
             return next('router')
         }
-        next()
+      return next()
     } catch (error) {
         res.status(401).json({msg: 'Wrong token, authentication failed'})
     }

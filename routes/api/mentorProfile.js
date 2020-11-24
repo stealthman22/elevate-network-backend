@@ -23,10 +23,10 @@ router.get('/me', [auth, partnerChange ], async (req, res) => {
         if(!mentorProfile) {
             return res.status(400).json({msg: 'Hello Mentor, You have not created a profile'})
         }
-        res.json(mentorProfile)
+       return res.json(mentorProfile)
     } catch (error) {
         console.error(error.message);
-        res.status(500).json({msg:'This is our fault not yours'})
+       return res.status(500).json({msg:'This is our fault not yours'})
     }
 })
 

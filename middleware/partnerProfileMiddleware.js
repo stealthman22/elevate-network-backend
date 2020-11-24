@@ -19,6 +19,7 @@ function changeToPartnerProfile(req, res, next) {
         if( decoded.user.role === 'partner' ) {
             return next('router');
         }
+        return next()
     } catch (error) {
         return res.status(401).json({msg: 'Wrong token, authentication failed'})
     }
