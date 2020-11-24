@@ -15,7 +15,7 @@ module.exports = function(req, res, next)  {
         const decoded = jwt.verify(token, config.get('jwtSecret'))
         // set decoded user param to request's 
         req.user = decoded.user
-        next()
+       return next()
     } catch (error) {
         res.status(401).json({msg: 'Wrong token, authentication failed'})
     }

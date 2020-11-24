@@ -17,10 +17,13 @@ function changeToMentorProfile(req, res, next) {
         // set role to the same value as in the request
        const role =  req.user.role = decoded.user.role;
         // check if role is mentor
-        if(role === 'mentor') {
-            return next('router')
+        if(role !== 'mentee' && role === 'mentor') {
+           return next('router')
+        } 
+        if (role !== 'mentor' && role === 'partner') {
+          return  next('router')
         }
-       return next()
+       return  next()
     } catch (error) {
         res.status(401).json({msg: 'Wrong token, authentication failed'})
     }

@@ -8,6 +8,7 @@ const {check, validationResult} = require('express-validator');
 // middlewares
 const auth = require('../../middleware/authMiddleware');
 // const menteeChange = require('../../middleware/menteeProfileMiddleware')
+// const mentorChange = require('../../middleware/mentorProfileMiddleware');
 
 
 // db collections
@@ -17,7 +18,7 @@ const User = require('../../models/User');
 // @route   GET api/PartnerProfile/me
 // @desc    GET current user profile
 // @access  Private 
-router.get('/me', auth, async (req, res) => {
+router.get('/me', [auth],  async (req, res) => {
     try {
         // fetch profile object
         const partnerProfile = await PartnerProfile.findOne({user:req.user.id});
