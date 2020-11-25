@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const User = require('../../models/User');
 const bcrypt = require('bcryptjs');
 const config = require('config')
 const jwt = require('jsonwebtoken')
 // const gravatar = require('gravatar')
 const {check, validationResult} = require
 ('express-validator')
+
+const User = require('../../models/User');
 
 // @route POST api/users
 // @desc Register user route
@@ -19,7 +20,7 @@ router.post('/', [
 check('username', 'Please enter a valid username').not().isEmpty(),
 check('email', 'Please enter a valid email').isEmail(),
 check('password', 'Please enter a password of not less than 8 characters').isLength({min:8}),
-check('status', 'Please select how you want to be registered').not().isEmpty()
+check('role', 'Please select how you want to be registered').not().isEmpty()
 ], 
 // req, res cycle
 async (req, res) => {
@@ -29,7 +30,7 @@ async (req, res) => {
 return res.status(400).json({errors: errors.array()})
  }
 //  destructor req body
-const {username, email, password, status} = req.body
+const {username, email, password,role} = req.body
     try {
         // check if user already exists
        let user = await User.findOne({email})
@@ -41,7 +42,7 @@ const {username, email, password, status} = req.body
            username,
            email,
            password,
-           status
+           role
        })
     //    Encrypt password
     const salt = await bcrypt.genSalt(10);
