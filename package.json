@@ -2,10 +2,10 @@
   "name": "elevate-network-backend",
   "version": "1.0.0",
   "description": "Backend for elevate network's web app",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server",
+   
     "server": "nodemon server"
   },
   "repository": {
