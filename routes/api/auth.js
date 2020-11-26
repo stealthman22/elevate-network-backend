@@ -50,6 +50,20 @@ async (req, res) => {
     // if ispwdmatch passes
     // create jwt payload
     const payload = await {
+routerLogic
+       user: {
+           id:user.id,
+           role:user.role
+       }
+    }
+    // if user login is successful, return token
+    jwt.sign(payload, config.get('jwtSecret'),
+    {expiresIn:36000}, (error, token) => {
+        if (error) throw error
+      return res.json({token})
+    })
+} catch (error) {
+
       user: {
         id: user.id,
       },
@@ -61,6 +75,7 @@ async (req, res) => {
         return res.json({ token });
       });
   } catch (error) {
+main
     console.error(error.message);
     res.status(500).send('Server Error');
   }

@@ -5,10 +5,18 @@ const router = express.Router();
 const config = require('config');
 
 // validator
+routerLogic
+const {check, validationResult} = require('express-validator');
+
+// middlewares
+
 const { check, validationResult } = require('express-validator');
 
 // auth middleware
+main
 const auth = require('../../middleware/authMiddleware');
+// const menteeChange = require('../../middleware/menteeProfileMiddleware')
+
 
 // db collections
 const PartnerProfile = require('../../models/PartnerProfile');
