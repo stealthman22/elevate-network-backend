@@ -13,7 +13,7 @@ app.use(express.json({ extended: false }));
 app.use('/admin', require('./admin/adminDashboard'));
 app.use('/api/users', require('./routes/api/users'));
 app.use('/api/auth', require('./routes/api/auth'));
-app.use('/api/profilesRouter', require('./routes/api/profileRouter'));
+app.use('/api/profileRouter', require('./routes/api/profileRouter'));
 
 const PORT = process.env.PORT || 6005;
 app.listen(PORT, () => console.log(`Application running on ${PORT}`));

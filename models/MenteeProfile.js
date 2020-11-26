@@ -85,4 +85,6 @@ const MenteeProfileSchema = new mongoose.Schema({
 
 });
 
-module.exports = MenteeProfile = mongoose.model('menteeProfile', MenteeProfileSchema);
+const MenteeProfile = mongoose.model('menteeProfile', MenteeProfileSchema);
+
+module.exports = MenteeProfile;
