@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
+const MenteeProfile = require('./MenteeProfile');
 
-const MenteeProfileSchema = new mongoose.Schema({
+const MentPartProfileSchema = new mongoose.Schema({
   user: {
     // create a reference to the user schema
     type: mongoose.Schema.Types.ObjectId,
@@ -68,11 +69,41 @@ const MenteeProfileSchema = new mongoose.Schema({
       },
     },
   ],
+  experience: [
+    {
+      title: {
+        type: String,
+        required: true,
+      },
+      company: {
+        type: String,
+        required: true,
+      },
+      location: {
+        type: String,
+        required: true,
+      },
+      from: {
+        type: Date,
+        required: true,
+      },
+      to: {
+        type: Date,
+      },
+      current: {
+        type: Boolean,
+        default: false,
+      },
+      description: {
+        type: String,
+      },
+    },
+  ],
   interests: {
     skills: {
       type: [String],
     },
-    learningInterests: {
+    interestedIn: {
       type: [String],
       required: true,
     },
@@ -85,4 +116,6 @@ const MenteeProfileSchema = new mongoose.Schema({
 
 });
 
-module.exports = MenteeProfile = mongoose.model('menteeProfile', MenteeProfileSchema);
+const MentPartProfile = mongoose.model('mentPartProfile', MentPartProfileSchema);
+
+module.exports = MentPartProfile;
