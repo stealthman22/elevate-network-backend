@@ -7,69 +7,17 @@ const {check, validationResult} = require('express-validator');
 
 //  middlewares
 const auth = require('../../middleware/authMiddleware');
-const mentorChange = require('../../middleware/mentorProfileMiddleware');
-// const partnerChange =  require('../../middleware/partnerProfileMiddleware')
+const mentorSwitch = require('../../middleware/mentorProfileMiddleware');
+// const partnerSwitch =  require('../../middleware/partnerProfileMiddleware')
 
 // db collections
 const MenteeProfile = require('../../models/MenteeProfile');
 const User = require('../../models/User');
 
-// fetch profile object
-
-      // check if we have to change profile router
-    //   router.use( async (function shouldRouterChange(req, res, next) {
-    //     let userRole = await Mentee.findOne({status:req.user.role});
-    
-    //     // conditional
-    //     if (userRole==='mentor') {
-    //         return next('router')
-    //     }
-    //     return next()
-    // }));
-
-    // async function shouldRouterChange(req, res, next) {
-
-    //     try {
-    //         let userRole = await MenteeProfile.findOne({user:req.user.id}).populate('user', ['role']);
-    //         // conditional
-    //        console.log(userRole)
-    //         if (userRole==='mentor') {
-    //             return next('router')
-    //        }
-    //          return next()
-    //     } catch (error) {
-    //         console.error(error.message)
-    //         res.status(500).json({msg: 'Server Error'})
-    //     }
-        
-    // } 
-    
-    // router.use(auth, shouldRouterChange);
-    // router.use( );  
-
-    // async function shouldRouterChange(req, res, next) {
-    //     let userRole = await User.findOne({user:req.role}).select('-password');
-    //     console.log(userRole)
-    //     if ( userRole === 'mentor') {
-    //         return next('router');
-    //     }
-    //     return next();
-    // }
-
-
-    //  function shouldRouterChange(req, res, next) {
-    //     if (req.user.role === 'mentor') {
-    //         return next('router');
-    //     }
-    //     return next();
-    // }
-
-
-
 // @route   GET api/menteeProfile/me
 // @desc    GET current user profile
 // @access  Private 
-router.get('/me', [auth, mentorChange,], async (req, res) => {
+router.get('/me', [auth, mentorSwitch,], async (req, res) => {
     try {
         // check if profile exists
         const menteeProfile = await MenteeProfile.findOne({user:req.user.id})
