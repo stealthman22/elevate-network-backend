@@ -1,28 +1,24 @@
 const jwt = require('jsonwebtoken');
 const config = require('config');
 
-// Return partner profile
+// Check user profile
+function partnerChange(req, res, next) {
+  const token = req.header('x-auth-token');
 
-function changeToPartnerProfile(req, res, next) {
-    const token = req.header('x-auth-token');
+  //  if no token is returned
+  if (!token) {
+    return res.status(401).json({ msg: 'No token, permission denied' });
+  }
+  // decode token
+  const decoded = jwt.verify(token, config.get('jwtSecret'));
+  // set role to the same value as in the request
+  req.user.role = decoded.user.role;
 
-    // if no token is returned
-    if(!token) {
-        return res.status(401).json({msg: 'No token, permission denied'})
-    }
-
-    try {
-        // decode token
-        const decoded = jwt.verify(token, config.get('jwtSecret'));
-        req.user.role === decoded.user.role;
-        //  check if role is mentor
-        if( decoded.user.role === 'partner' ) {
-            return next('router');
-        }
-        return next()
-    } catch (error) {
-        return res.status(401).json({msg: 'Wrong token, authentication failed'})
-    }
+  // check if role is mentor
+  if (decoded.user.role !== 'mentor') {
+    return next('router');
+  }
+  return next();
 }
 
-module.exports = changeToPartnerProfile
+module.exports = partnerChange;
