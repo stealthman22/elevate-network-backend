@@ -4,14 +4,13 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const config = require('config');
 const jwt = require('jsonwebtoken');
-// const gravatar = require('gravatar')
 const { check, validationResult } = require('express-validator');
 
 const User = require('../../models/User');
 
 // @route POST api/users
 // @desc Register user route
-// @access  Private
+// @access  Public
 
 // perform info validation
 
@@ -29,7 +28,7 @@ async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  //  destructor req body
+  //  destructure req body
   const {
     username, email, password, role,
   } = req.body;
@@ -39,6 +38,7 @@ async (req, res) => {
     if (user) {
       return res.status(400).json({ errors: [{ msg: 'Invalid registration details' }] });
     }
+
     //    create new user in db
     user = new User({
       username,
@@ -59,8 +59,8 @@ async (req, res) => {
       },
     };
     // jwt config
-    // change all values of jwt expiresIn option
-    jwt.sign(payload, config.get('jwtSecret'), { expiresIn: 3600 }, (error, token) => {
+    // Ensure token expires in 1 hour
+    jwt.sign(payload, config.get('jwtSecret'), { expiresIn: 36000 }, (error, token) => {
       if (error) throw error;
       res.json({ token });
     });
