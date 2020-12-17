@@ -14,12 +14,8 @@ const MentorProfileSchema = new mongoose.Schema({
     age: {
       // hide from front-end
       type: String,
-      required: true,
     },
-    email: {
-      type: String,
-      required: true,
-    },
+
     aboutMe: {
       type: String,
       required: true,
@@ -32,6 +28,9 @@ const MentorProfileSchema = new mongoose.Schema({
       // be sure how to represent this in mongoDb
       type: Date,
       required: true,
+    },
+    profilePic: {
+      type: String,
     },
   },
   education: [
@@ -115,4 +114,5 @@ const MentorProfileSchema = new mongoose.Schema({
 
 });
 
-module.exports = MentorProfile = mongoose.model('mentorProfile', MentorProfileSchema);
+const MentorProfile = mongoose.model('mentorProfile', MentorProfileSchema);
+module.exports = MentorProfile;

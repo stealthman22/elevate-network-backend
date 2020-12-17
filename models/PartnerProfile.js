@@ -14,11 +14,6 @@ const PartnerProfileSchema = new mongoose.Schema({
     age: {
       // hide from front-end
       type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
     },
     aboutMe: {
       type: String,
@@ -32,6 +27,9 @@ const PartnerProfileSchema = new mongoose.Schema({
       // be sure how to represent this in mongoDb
       type: Date,
       required: true,
+    },
+    profilePic: {
+      type: String,
     },
   },
   education: [
