@@ -78,7 +78,7 @@ router.get('/user/:user_id', auth, async (req, res) => {
 // @route   POST api/menteeProfile
 // @desc    Create or update user profile
 // @access  Private
-router.post('/', auth, [
+router.post('/', [auth, mentorSwitch], [
   check('fullName', 'This field is required').not().isEmpty(),
   check('aboutMe', 'This field is required').not().isEmpty(),
   check('location', 'This field is required').not().isEmpty(),

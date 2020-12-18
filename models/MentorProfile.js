@@ -6,7 +6,7 @@ const MentorProfileSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
   },
-  Bio: {
+  bio: {
     fullName: {
       type: String,
       required: true,
@@ -24,13 +24,22 @@ const MentorProfileSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
-    DOB: {
+    dob: {
       // be sure how to represent this in mongoDb
       type: Date,
-      required: true,
+
     },
     profilePic: {
       type: String,
+    },
+  },
+  interests: {
+    skills: {
+      type: [String],
+    },
+    teachingInterests: {
+      type: [String],
+
     },
   },
   education: [
@@ -97,15 +106,6 @@ const MentorProfileSchema = new mongoose.Schema({
       },
     },
   ],
-  interests: {
-    skills: {
-      type: [String],
-    },
-    sponsoringInterests: {
-      type: [String],
-      required: true,
-    },
-  },
 
   dateUpdated: {
     type: Date,
