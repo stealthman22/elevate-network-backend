@@ -163,4 +163,23 @@ async (req, res) => {
   }
 });
 
+// @route   DELETE api/profile/me
+// @desc    Delete a profile, user and posts.
+// @access  Private
+router.delete('/', [auth, mentorSwitch], async (req, res) => {
+  try {
+    // Delete a profile
+    await MenteeProfile.findOneAndRemove({ user: req.user.id });
+
+    // Delete a user
+    await User.findOneAndRemove({ _id: req.user.id });
+
+    // return object if deletion is succesful
+    return res.json({ msg: 'User deleted' });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ msg: 'This is our fault not yours' });
+  }
+});
+
 module.exports = router;

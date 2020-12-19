@@ -6,7 +6,7 @@ const PartnerProfileSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
   },
-  Bio: {
+  bio: {
     fullName: {
       type: String,
       required: true,
@@ -23,15 +23,25 @@ const PartnerProfileSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
-    DOB: {
+    dob: {
       // be sure how to represent this in mongoDb
       type: Date,
-      required: true,
+
     },
     profilePic: {
       type: String,
     },
   },
+  interests: {
+    skills: {
+      type: [String],
+    },
+    teachingInterests: {
+      type: [String],
+      required: true,
+    },
+  },
+
   education: [
     {
       school: {
@@ -96,15 +106,6 @@ const PartnerProfileSchema = new mongoose.Schema({
       },
     },
   ],
-  interests: {
-    skills: {
-      type: [String],
-    },
-    teachingInterests: {
-      type: [String],
-      required: true,
-    },
-  },
 
   dateUpdated: {
     type: Date,
