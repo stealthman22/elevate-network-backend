@@ -35,7 +35,7 @@ router.get('/me', [auth, mentorSwitch], async (req, res) => {
 // @route   GET api/profiles
 // @desc    GET all profiles
 // @access  Private
-router.get('/', auth, async (req, res) => {
+router.get('/', [auth, mentorSwitch], async (req, res) => {
   try {
     const profiles = await MenteeProfile.find().populate('user', ['username']);
 
@@ -55,7 +55,7 @@ router.get('/', auth, async (req, res) => {
 // @route   GET api/profiles
 // @desc    GET all profiles
 // @access  Private
-router.get('/user/:user_id', auth, async (req, res) => {
+router.get('/user/:user_id', [auth, mentorSwitch], async (req, res) => {
   try {
     const profile = await MenteeProfile.findOne({ user: req.params.user_id }).populate('user', ['username', 'profilePic']);
 
@@ -179,6 +179,82 @@ router.delete('/', [auth, mentorSwitch], async (req, res) => {
   } catch (error) {
     console.error(error.message);
     return res.status(500).json({ msg: 'This is our fault not yours' });
+  }
+});
+
+// @route   PUT api/profile/education
+// @desc    Add education to a profile.
+// @access  Private
+router.put('/education', [auth, mentorSwitch], [
+  check('school', 'School is required').not().isEmpty(),
+  check('degree', 'Degree is required').not().isEmpty(),
+  check('fieldOfStudy', 'Field of study is required').not().isEmpty(),
+  check('from', 'From date is required').not().isEmpty(),
+  check('location', 'Location of school is required').not().isEmpty(),
+],
+async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  // destructure request object
+  const {
+    school,
+    degree,
+    fieldOfStudy,
+    location,
+    from,
+    to,
+    current,
+    description,
+  } = req.body;
+
+  // Add new education
+  const newEdu = {
+    school,
+    degree,
+    fieldOfStudy,
+    location,
+    from,
+    to,
+    current,
+    description,
+  };
+
+  try {
+    const profile = await MenteeProfile.findOne({ user: req.user.id });
+
+    // update profile
+    profile.education.unshift(newEdu);
+    // save updated profile
+    await profile.save();
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ msg: 'This is our fault not yours' });
+  }
+});
+
+// @route   DELETE api/profile/education/:edu_id
+// @desc    Delete  profile education
+// @access  Private
+router.delete('/education/:edu_id', [auth, mentorSwitch], async (req, res) => {
+  const profile = await MenteeProfile.findOne({ user: req.user.id });
+  try {
+    // grab the index
+    const removeIndex = profile.education
+      .map((item) => item.id)
+      .indexOf(req.params.edu_id);
+      // remove it from the education array
+    profile.education.splice(removeIndex, 1);
+
+    // save profile after deletion of edu
+    await profile.save();
+    //  return modified profile
+    return res.jso(profile);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ msg: 'This is our fault not yours' });
   }
 });
 

@@ -2,8 +2,6 @@ const express = require('express');
 
 const router = express.Router();
 
-const config = require('config');
-
 // validator
 const { check, validationResult } = require('express-validator');
 
@@ -58,7 +56,7 @@ async (req, res) => {
     dob,
     profilePic,
     skills,
-    teachingInterests,
+    sponsoringInterests,
     youtube,
     facebook,
     twitter,
@@ -85,8 +83,8 @@ async (req, res) => {
     profileFields.interests.skills = skills.split(',').map((skill) => skill.trim());
   }
 
-  if (teachingInterests) {
-    profileFields.interests.teachingInterests = teachingInterests.split(',').map((teachingInterest) => teachingInterest.trim());
+  if (sponsoringInterests) {
+    profileFields.interests.sponsoringInterests = sponsoringInterests.split(',').map((sponsoringInterest) => sponsoringInterest.trim());
   }
 
   // Social object
@@ -134,6 +132,155 @@ router.delete('/', auth, async (req, res) => {
   } catch (error) {
     console.error(error.message);
     return res.status(500).json({ msg: 'This is our fault not yours' });
+  }
+});
+
+// @route   PUT api/profile/education
+// @desc    Add education to a profile.
+// @access  Private
+router.put('/education', auth, [
+  check('school', 'School is required').not().isEmpty(),
+  check('degree', 'Degree is required').not().isEmpty(),
+  check('fieldOfStudy', 'Field of study is required').not().isEmpty(),
+  check('from', 'From date is required').not().isEmpty(),
+  check('location', 'Location of school is required').not().isEmpty(),
+],
+async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  // destructure request object
+  const {
+    school,
+    degree,
+    fieldOfStudy,
+    location,
+    from,
+    to,
+    current,
+    description,
+  } = req.body;
+
+  // Add new education
+  const newEdu = {
+    school,
+    degree,
+    fieldOfStudy,
+    location,
+    from,
+    to,
+    current,
+    description,
+  };
+
+  try {
+    const profile = await PartnerProfile.findOne({ user: req.user.id });
+
+    // update profile
+    profile.education.unshift(newEdu);
+    // save updated profile
+    await profile.save();
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ msg: 'This is our fault not yours' });
+  }
+});
+
+// @route   DELETE api/profile/education/:edu_id
+// @desc    Delete  profile education
+// @access  Private
+router.delete('/education/:edu_id', auth, async (req, res) => {
+  const profile = await PartnerProfile.findOne({ user: req.user.id });
+  try {
+    // grab the index
+    const removeIndex = profile.education
+      .map((item) => item.id)
+      .indexOf(req.params.edu_id);
+      // remove it from the education array
+    profile.education.splice(removeIndex, 1);
+
+    // save profile after deletion of edu
+    await profile.save();
+    //  return modified profile
+    return res.jso(profile);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ msg: 'This is our fault not yours' });
+  }
+});
+
+// @route   PUT api/profile/experience
+// @desc   Add profile experience
+// @access  Private
+router.put('/experience', auth,
+  [
+    check('title', 'Title is required').not().isEmpty(),
+    check('company', 'Company is required').not().isEmpty(),
+    check('from', 'From date is required').not().isEmpty(),
+    check('location', 'Location is required'),
+  ],
+
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    // destructure the req
+    const {
+      title,
+      company,
+      from,
+      to,
+      current,
+      description,
+    } = req.body;
+
+    // add new experience
+    const newExp = {
+      title,
+      company,
+      from,
+      to,
+      current,
+      description,
+    };
+
+    try {
+      const profile = await PartnerProfile.findOne({ user: req.user.id });
+
+      profile.experience.unshift(newExp);
+      await profile.save();
+
+      return res.json(profile);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send('This is our fault not yours');
+    }
+  });
+
+// @route   DELETE api/profile/experience/:exp_id
+// @desc    Delete  profile experience
+// @access  Private
+router.delete('/experience/:exp_id', auth, async (req, res) => {
+  try {
+    const profile = await PartnerProfile.findOne({ user: req.user.id });
+
+    // Get remove index to delete profile
+    const removeIndex = profile.experience
+      .map((item) => item.id)
+      .indexOf(req.params.exp_id);
+    // take it out
+    // splice mutates the array
+    profile.experience.splice(removeIndex, 1);
+    // save modified profile
+    await profile.save();
+    // return modified profile
+    return res.json(profile);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send('This is our fault not yours');
   }
 });
 

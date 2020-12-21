@@ -36,7 +36,7 @@ const PartnerProfileSchema = new mongoose.Schema({
     skills: {
       type: [String],
     },
-    teachingInterests: {
+    sponsoringInterests: {
       type: [String],
       required: true,
     },
