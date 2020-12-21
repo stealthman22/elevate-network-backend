@@ -13,16 +13,18 @@ AdminBro.registerAdapter(AdminBroMongoose);
 // const DB = require('../config/db');
 const User = require('../models/User');
 const Admin = require('../models/Admin');
+const MenteeProfile = require('../models/MenteeProfile');
+const MentorProfile = require('../models/MentorProfile');
+const PartnerProfile = require('../models/PartnerProfile');
 
 // pass resources to admin dashboard
 const options = {
   rootPath: '/admin',
-  resources: [User, {
-    resource: Admin,
-
-  }],
+  resources: [{ resource: User, options: {} }, Admin, MenteeProfile, MentorProfile, PartnerProfile],
   branding: {
     companyName: 'Elevate Admin',
+    softwareBrothers: false,
+
   },
 };
 
