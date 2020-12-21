@@ -163,25 +163,6 @@ async (req, res) => {
   }
 });
 
-// @route   DELETE api/profile/me
-// @desc    Delete a profile, user and posts.
-// @access  Private
-router.delete('/', [auth, mentorSwitch], async (req, res) => {
-  try {
-    // Delete a profile
-    await MenteeProfile.findOneAndRemove({ user: req.user.id });
-
-    // Delete a user
-    await User.findOneAndRemove({ _id: req.user.id });
-
-    // return object if deletion is succesful
-    return res.json({ msg: 'User deleted' });
-  } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({ msg: 'This is our fault not yours' });
-  }
-});
-
 // @route   PUT api/profile/education
 // @desc    Add education to a profile.
 // @access  Private
@@ -229,6 +210,8 @@ async (req, res) => {
     profile.education.unshift(newEdu);
     // save updated profile
     await profile.save();
+    // return saved profile
+    res.json(profile);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ msg: 'This is our fault not yours' });
@@ -251,11 +234,29 @@ router.delete('/education/:edu_id', [auth, mentorSwitch], async (req, res) => {
     // save profile after deletion of edu
     await profile.save();
     //  return modified profile
-    return res.jso(profile);
+    return res.json(profile);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ msg: 'This is our fault not yours' });
   }
 });
 
+// @route   DELETE api/profile/me
+// @desc    Delete a profile, user and posts.
+// @access  Private
+router.delete('/', [auth, mentorSwitch], async (req, res) => {
+  try {
+    // Delete a profile
+    await MenteeProfile.findOneAndRemove({ user: req.user.id });
+
+    // Delete a user
+    await User.findOneAndRemove({ _id: req.user.id });
+
+    // return object if deletion is succesful
+    return res.json({ msg: 'User deleted' });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ msg: 'This is our fault not yours' });
+  }
+});
 module.exports = router;

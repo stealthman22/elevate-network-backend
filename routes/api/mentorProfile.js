@@ -79,7 +79,7 @@ router.get('/user/:user_id', [auth, partnerSwitch], async (req, res) => {
 // @route   POST api/mentorProfile
 // @desc    Create or update user profile
 // @access  Private
-router.post('/', auth, [
+router.post('/', [auth, partnerSwitch], [
   check('fullName', 'This field is required').not().isEmpty(),
   check('aboutMe', 'This field is required').not().isEmpty(),
   check('location', 'This field is required').not().isEmpty(),
@@ -164,25 +164,6 @@ async (req, res) => {
   }
 });
 
-// @route   DELETE api/profile/me
-// @desc    Delete a profile, user and posts.
-// @access  Private
-router.delete('/', [auth, partnerSwitch], async (req, res) => {
-  try {
-    // Delete a profile
-    await MentorProfile.findOneAndRemove({ user: req.user.id });
-
-    // Delete a user
-    await User.findOneAndRemove({ _id: req.user.id });
-
-    // return object if deletion is succesful
-    return res.json({ msg: 'User deleted' });
-  } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({ msg: 'This is our fault not yours' });
-  }
-});
-
 // @route   PUT api/profile/education
 // @desc    Add education to a profile.
 // @access  Private
@@ -230,6 +211,7 @@ async (req, res) => {
     profile.education.unshift(newEdu);
     // save updated profile
     await profile.save();
+    res.json(profile);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ msg: 'This is our fault not yours' });
@@ -252,7 +234,7 @@ router.delete('/education/:edu_id', [auth, partnerSwitch], async (req, res) => {
     // save profile after deletion of edu
     await profile.save();
     //  return modified profile
-    return res.jso(profile);
+    return res.json(profile);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ msg: 'This is our fault not yours' });
@@ -283,6 +265,7 @@ router.put('/experience', [auth, partnerSwitch],
       to,
       current,
       description,
+      location,
     } = req.body;
 
     // add new experience
@@ -293,11 +276,11 @@ router.put('/experience', [auth, partnerSwitch],
       to,
       current,
       description,
+      location,
     };
 
     try {
       const profile = await MentorProfile.findOne({ user: req.user.id });
-
       profile.experience.unshift(newExp);
       await profile.save();
 
@@ -332,4 +315,22 @@ router.delete('/experience/:exp_id', [auth, partnerSwitch], async (req, res) => 
   }
 });
 
+// @route   DELETE api/profile/me
+// @desc    Delete a profile, user and posts.
+// @access  Private
+router.delete('/', [auth, partnerSwitch], async (req, res) => {
+  try {
+    // Delete a profile
+    await MentorProfile.findOneAndRemove({ user: req.user.id });
+
+    // Delete a user
+    await User.findOneAndRemove({ _id: req.user.id });
+
+    // return object if deletion is succesful
+    return res.json({ msg: 'User deleted' });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ msg: 'This is our fault not yours' });
+  }
+});
 module.exports = router;

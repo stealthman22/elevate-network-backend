@@ -38,7 +38,7 @@ const PartnerProfileSchema = new mongoose.Schema({
     },
     sponsoringInterests: {
       type: [String],
-      required: true,
+
     },
   },
 
@@ -115,5 +115,4 @@ const PartnerProfileSchema = new mongoose.Schema({
 });
 
 const PartnerProfile = mongoose.model('partnerProfile', PartnerProfileSchema);
-
 module.exports = PartnerProfile;

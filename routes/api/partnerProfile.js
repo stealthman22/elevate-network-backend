@@ -119,22 +119,6 @@ async (req, res) => {
   }
 });
 
-router.delete('/', auth, async (req, res) => {
-  try {
-    // Delete a profile
-    await PartnerProfile.findOneAndRemove({ user: req.user.id });
-
-    // Delete a user
-    await User.findOneAndRemove({ _id: req.user.id });
-
-    // return object if deletion is succesful
-    return res.json({ msg: 'User deleted' });
-  } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({ msg: 'This is our fault not yours' });
-  }
-});
-
 // @route   PUT api/profile/education
 // @desc    Add education to a profile.
 // @access  Private
@@ -177,11 +161,11 @@ async (req, res) => {
 
   try {
     const profile = await PartnerProfile.findOne({ user: req.user.id });
-
     // update profile
     profile.education.unshift(newEdu);
     // save updated profile
     await profile.save();
+    res.json(profile);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ msg: 'This is our fault not yours' });
@@ -204,7 +188,7 @@ router.delete('/education/:edu_id', auth, async (req, res) => {
     // save profile after deletion of edu
     await profile.save();
     //  return modified profile
-    return res.jso(profile);
+    return res.json(profile);
   } catch (error) {
     console.error(error.message);
     res.status(500).json({ msg: 'This is our fault not yours' });
@@ -235,6 +219,7 @@ router.put('/experience', auth,
       to,
       current,
       description,
+      location,
     } = req.body;
 
     // add new experience
@@ -245,6 +230,7 @@ router.put('/experience', auth,
       to,
       current,
       description,
+      location,
     };
 
     try {
@@ -274,6 +260,7 @@ router.delete('/experience/:exp_id', auth, async (req, res) => {
     // take it out
     // splice mutates the array
     profile.experience.splice(removeIndex, 1);
+
     // save modified profile
     await profile.save();
     // return modified profile
@@ -281,6 +268,25 @@ router.delete('/experience/:exp_id', auth, async (req, res) => {
   } catch (error) {
     console.error(error.message);
     res.status(500).send('This is our fault not yours');
+  }
+});
+
+// @route   DELETE api/PartnerProfile/me
+// @desc    delete a user's profile and user from database
+// @access  Private
+router.delete('/', auth, async (req, res) => {
+  try {
+    // Delete a profile
+    await PartnerProfile.findOneAndRemove({ user: req.user.id });
+
+    // Delete a user
+    await User.findOneAndRemove({ _id: req.user.id });
+
+    // return object if deletion is succesful
+    return res.json({ msg: 'User deleted' });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ msg: 'This is our fault not yours' });
   }
 });
 
