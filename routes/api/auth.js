@@ -22,7 +22,6 @@ router.get('/', auth, async (req, res) => {
     res.status(500).json({ msg: 'Server Error' });
   }
 });
-
 // @route   Post api/auth
 // @desc    Login user
 // @access  Private
