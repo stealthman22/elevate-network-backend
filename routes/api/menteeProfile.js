@@ -98,7 +98,6 @@ async (req, res) => {
     aboutMe,
     location,
     dob,
-    profilePic,
     skills,
     learningInterests,
     youtube,
@@ -119,7 +118,6 @@ async (req, res) => {
   if (aboutMe) profileFields.bio.aboutMe = aboutMe;
   if (location) profileFields.bio.location = location;
   if (dob) profileFields.bio.dob = dob;
-  if (profilePic) profileFields.bio.profilePic = profilePic;
   // comma separated values to arrays
 
   profileFields.interests = {};
