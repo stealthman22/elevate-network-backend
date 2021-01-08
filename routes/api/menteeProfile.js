@@ -68,7 +68,7 @@ router.get('/user/:user_id', [auth, mentorSwitch], async (req, res) => {
     return res.json(profile);
   } catch (error) {
     console.error(error.message);
-    if (error.king === 'ObjectId') {
+    if (error.kind === 'ObjectId') {
       return res.status(400).json({ msg: 'Profile not found' });
     }
     return res.status(500).json({ msg: 'This is our fault not yours' });
@@ -82,7 +82,8 @@ router.post('/', [auth, mentorSwitch], [
   check('fullName', 'This field is required').not().isEmpty(),
   check('aboutMe', 'This field is required').not().isEmpty(),
   check('location', 'This field is required').not().isEmpty(),
-  check('dob', 'This field is required').not().isEmpty(),
+  check('age', 'This field is required').not().isEmpty(),
+  // check('dob', 'This field is required').not().isEmpty(),
 ],
 async (req, res) => {
   const errors = validationResult(req);
@@ -98,7 +99,6 @@ async (req, res) => {
     aboutMe,
     location,
     dob,
-    profilePic,
     skills,
     learningInterests,
     youtube,
@@ -119,7 +119,6 @@ async (req, res) => {
   if (aboutMe) profileFields.bio.aboutMe = aboutMe;
   if (location) profileFields.bio.location = location;
   if (dob) profileFields.bio.dob = dob;
-  if (profilePic) profileFields.bio.profilePic = profilePic;
   // comma separated values to arrays
 
   profileFields.interests = {};

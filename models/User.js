@@ -17,7 +17,7 @@ const UserSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['mentee', 'mentor', 'partner'],
+    enum: ['Mentee', 'Mentor', 'Partner'],
     required: true,
   },
   dateCreated: {

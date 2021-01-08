@@ -27,10 +27,7 @@ const MenteeProfileSchema = new mongoose.Schema({
     dob: {
       // be sure how to represent this in mongoDb
       type: Date,
-      required: true,
-    },
-    profilePic: {
-      type: String,
+
     },
   },
   interests: {
