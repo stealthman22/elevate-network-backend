@@ -68,7 +68,7 @@ router.get('/user/:user_id', [auth, mentorSwitch], async (req, res) => {
     return res.json(profile);
   } catch (error) {
     console.error(error.message);
-    if (error.king === 'ObjectId') {
+    if (error.kind === 'ObjectId') {
       return res.status(400).json({ msg: 'Profile not found' });
     }
     return res.status(500).json({ msg: 'This is our fault not yours' });
@@ -82,7 +82,8 @@ router.post('/', [auth, mentorSwitch], [
   check('fullName', 'This field is required').not().isEmpty(),
   check('aboutMe', 'This field is required').not().isEmpty(),
   check('location', 'This field is required').not().isEmpty(),
-  check('dob', 'This field is required').not().isEmpty(),
+  check('age', 'This field is required').not().isEmpty(),
+  // check('dob', 'This field is required').not().isEmpty(),
 ],
 async (req, res) => {
   const errors = validationResult(req);
