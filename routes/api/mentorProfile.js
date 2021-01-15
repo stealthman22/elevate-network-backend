@@ -83,7 +83,7 @@ router.post('/', [auth, partnerSwitch], [
   check('fullName', 'This field is required').not().isEmpty(),
   check('aboutMe', 'This field is required').not().isEmpty(),
   check('location', 'This field is required').not().isEmpty(),
-  check('dob', 'This field is required').not().isEmpty(),
+  check('age', 'This field is required').not().isEmpty(),
 ],
 async (req, res) => {
   const errors = validationResult(req);
