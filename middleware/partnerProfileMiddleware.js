@@ -41,7 +41,7 @@ function partnerSwitch(req, res, next) {
     // set role to the same value as in the request
     req.user.role = decoded.user.role;
     // check if role is mentor
-    if (decoded.user.role !== 'mentor') {
+    if (decoded.user.role !== 'Mentor') {
       return next('router');
     }
     return next();

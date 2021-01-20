@@ -16,7 +16,7 @@ function mentorSwitch(req, res, next) {
     // set role to the same value as in the request
     req.user.role = decoded.user.role;
     // check if role is mentor
-    if (decoded.user.role !== 'mentee') {
+    if (decoded.user.role !== 'Mentee') {
       return next('router');
     }
     return next();
