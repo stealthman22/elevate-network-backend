@@ -53,7 +53,7 @@ router.get('/', [auth, mentorSwitch], async (req, res) => {
 });
 
 // @route   GET api/profiles
-// @desc    GET all profiles
+// @desc    GET profile by id
 // @access  Private
 router.get('/user/:user_id', [auth, mentorSwitch], async (req, res) => {
   try {

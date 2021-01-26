@@ -8,6 +8,7 @@ const { check, validationResult } = require('express-validator');
 // middlewares
 
 const auth = require('../../middleware/authMiddleware');
+const menteeSwitch = require('../../middleware/menteeProfileMiddleware');
 
 // db collections
 const PartnerProfile = require('../../models/PartnerProfile');
@@ -16,7 +17,7 @@ const User = require('../../models/User');
 // @route   GET api/PartnerProfile/me
 // @desc    GET current user profile
 // @access  Private
-router.get('/me', auth, async (req, res) => {
+router.get('/me', [auth, menteeSwitch], async (req, res) => {
   try {
     // fetch profile object
     const partnerProfile = await PartnerProfile.findOne({ user: req.user.id });
@@ -31,10 +32,53 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
+// @route   GET api/profiles
+// @desc    GET all profiles
+// @access  Private
+router.get('/', [auth, menteeSwitch], async (req, res) => {
+  try {
+    const profiles = await PartnerProfile.find().populate('user', ['username']);
+
+    // check if no profiles
+    // Might have no effect in backend
+    if (!profiles) {
+      return res.status(400).json({ msg: 'There are no profiles yet' });
+    }
+    // return profiles
+    return res.json(profiles);
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ msg: 'This is our fault not yours' });
+  }
+});
+
+// @route   GET api/profiles
+// @desc    GET profile by id
+// @access  Private
+router.get('/user/:user_id', [auth, menteeSwitch], async (req, res) => {
+  try {
+    const profile = await PartnerProfile.findOne({ user: req.params.user_id }).populate('user', ['username', 'profilePic']);
+
+    // check if no profiles
+    // Might have no effect in backend
+    if (!profile) {
+      return res.status(400).json({ msg: 'Profile not found' });
+    }
+    // return profiles
+    return res.json(profile);
+  } catch (error) {
+    console.error(error.message);
+    if (error.kind === 'ObjectId') {
+      return res.status(400).json({ msg: 'Profile not found' });
+    }
+    return res.status(500).json({ msg: 'This is our fault not yours' });
+  }
+});
+
 // @route   POST api/PartnerProfile
 // @desc    Create or update user profile
 // @access  Private
-router.post('/', auth, [
+router.post('/', [auth, menteeSwitch], [
   check('fullName', 'This field is required').not().isEmpty(),
   check('aboutMe', 'This field is required').not().isEmpty(),
   check('location', 'This field is required').not().isEmpty(),
@@ -122,7 +166,7 @@ async (req, res) => {
 // @route   PUT api/profile/education
 // @desc    Add education to a profile.
 // @access  Private
-router.put('/education', auth, [
+router.put('/education', [auth, menteeSwitch], [
   check('school', 'School is required').not().isEmpty(),
   check('degree', 'Degree is required').not().isEmpty(),
   check('fieldOfStudy', 'Field of study is required').not().isEmpty(),
@@ -175,7 +219,7 @@ async (req, res) => {
 // @route   DELETE api/profile/education/:edu_id
 // @desc    Delete  profile education
 // @access  Private
-router.delete('/education/:edu_id', auth, async (req, res) => {
+router.delete('/education/:edu_id', [auth, menteeSwitch], async (req, res) => {
   const profile = await PartnerProfile.findOne({ user: req.user.id });
   try {
     // grab the index
@@ -198,7 +242,7 @@ router.delete('/education/:edu_id', auth, async (req, res) => {
 // @route   PUT api/profile/experience
 // @desc   Add profile experience
 // @access  Private
-router.put('/experience', auth,
+router.put('/experience', [auth, menteeSwitch],
   [
     check('title', 'Title is required').not().isEmpty(),
     check('company', 'Company is required').not().isEmpty(),
@@ -249,7 +293,7 @@ router.put('/experience', auth,
 // @route   DELETE api/profile/experience/:exp_id
 // @desc    Delete  profile experience
 // @access  Private
-router.delete('/experience/:exp_id', auth, async (req, res) => {
+router.delete('/experience/:exp_id', [auth, menteeSwitch], async (req, res) => {
   try {
     const profile = await PartnerProfile.findOne({ user: req.user.id });
 
@@ -274,7 +318,7 @@ router.delete('/experience/:exp_id', auth, async (req, res) => {
 // @route   DELETE api/PartnerProfile/me
 // @desc    delete a user's profile and user from database
 // @access  Private
-router.delete('/', auth, async (req, res) => {
+router.delete('/', [auth, menteeSwitch], async (req, res) => {
   try {
     // Delete a profile
     await PartnerProfile.findOneAndRemove({ user: req.user.id });

@@ -54,7 +54,7 @@ router.get('/', [auth, partnerSwitch], async (req, res) => {
 });
 
 // @route   GET api/profiles
-// @desc    GET all profiles
+// @desc    GET profile by id
 // @access  Private
 router.get('/user/:user_id', [auth, partnerSwitch], async (req, res) => {
   try {
@@ -69,7 +69,7 @@ router.get('/user/:user_id', [auth, partnerSwitch], async (req, res) => {
     return res.json(profile);
   } catch (error) {
     console.error(error.message);
-    if (error.king === 'ObjectId') {
+    if (error.kind === 'ObjectId') {
       return res.status(400).json({ msg: 'Profile not found' });
     }
     return res.status(500).json({ msg: 'This is our fault not yours' });
