@@ -39,7 +39,7 @@ router.get('/me', [auth, menteeSwitch], async (req, res) => {
 // @access  Private
 router.get('/', [auth, menteeSwitch], async (req, res) => {
   try {
-    const profiles = await PartnerProfile.find().populate('user', ['username', 'role', 'avatar']);
+    const profiles = await User.find().populate('user', ['username', 'role', 'avatar']);
 
     // check if no profiles
     // Might have no effect in backend
