@@ -5,6 +5,7 @@ const bcrypt = require('bcryptjs');
 const config = require('config');
 const jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator');
+const gravatar = require('gravatar');
 
 const User = require('../../models/User');
 
@@ -39,28 +40,37 @@ async (req, res) => {
       return res.status(400).json({ errors: [{ msg: 'Invalid registration details' }] });
     }
 
+    // fetch avatar
+    const avatar = gravatar.url(email, {
+      s: '200',
+      r: 'pg',
+      d: 'mm',
+    });
+
     //    create new user in db
     user = new User({
       username,
       email,
       password,
       role,
+      avatar,
     });
     //    Encrypt password
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(password, salt);
+
     await user.save();
 
     // return jwt
     const payload = await {
       user: {
         id: user.id,
-        // role: user.role
+        role: user.role,
       },
     };
     // jwt config
     // Ensure token expires in 1 hour
-    jwt.sign(payload, config.get('jwtSecret'), { expiresIn: 36000 }, (error, token) => {
+    jwt.sign(payload, config.get('jwtSecret'), { expiresIn: 3600 }, (error, token) => {
       if (error) throw error;
       res.json({ token });
     });

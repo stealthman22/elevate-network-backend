@@ -12,6 +12,8 @@ const menteeSwitch = require('../../middleware/menteeProfileMiddleware');
 
 // db collections
 const PartnerProfile = require('../../models/PartnerProfile');
+// const MentorProfile = require('../../models/MentorProfile');
+// const MenteeProfile = require('../../models/MenteeProfile');
 const User = require('../../models/User');
 
 // @route   GET api/PartnerProfile/me
@@ -37,7 +39,7 @@ router.get('/me', [auth, menteeSwitch], async (req, res) => {
 // @access  Private
 router.get('/', [auth, menteeSwitch], async (req, res) => {
   try {
-    const profiles = await PartnerProfile.find().populate('user', ['username']);
+    const profiles = await PartnerProfile.find().populate('user', ['username', 'role', 'avatar']);
 
     // check if no profiles
     // Might have no effect in backend
