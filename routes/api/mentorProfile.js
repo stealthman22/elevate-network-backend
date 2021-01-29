@@ -98,7 +98,7 @@ router.get('/partner-profiles', [auth, partnerSwitch], async (req, res) => {
 // @route   GET api/profiles
 // @desc    GET mentor profile by id
 // @access  Private
-router.get('/user/:user_id', [auth, partnerSwitch], async (req, res) => {
+router.get('/mentor-user/:user_id', [auth, partnerSwitch], async (req, res) => {
   try {
     const profile = await MentorProfile.findOne({ user: req.params.user_id }).populate('user', ['username', 'role', 'avatar']);
 
@@ -121,7 +121,7 @@ router.get('/user/:user_id', [auth, partnerSwitch], async (req, res) => {
 // @route   GET api/profiles
 // @desc    GET  Mentee profile by id
 // @access  Private
-router.get('/user/:user_id', [auth, partnerSwitch], async (req, res) => {
+router.get('/mentee-user/:user_id', [auth, partnerSwitch], async (req, res) => {
   try {
     const profile = await MenteeProfile.findOne({ user: req.params.user_id }).populate('user', ['username', 'role', 'avatar']);
 
@@ -143,7 +143,7 @@ router.get('/user/:user_id', [auth, partnerSwitch], async (req, res) => {
 // @route   GET api/profiles
 // @desc    GET  partner  profile by id
 // @access  Private
-router.get('/user/:user_id', [auth, partnerSwitch], async (req, res) => {
+router.get('/partner-user/:user_id', [auth, partnerSwitch], async (req, res) => {
   try {
     const profile = await PartnerProfile.findOne({ user: req.params.user_id }).populate('user', ['username', 'role', 'avatar']);
 
