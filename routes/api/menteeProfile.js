@@ -37,7 +37,7 @@ router.get('/me', [auth, mentorSwitch], async (req, res) => {
 // @route   GET api/profiles
 // @desc    GET all mentee profiles
 // @access  Private
-router.get('/', [auth, mentorSwitch], async (req, res) => {
+router.get('/mentee-profiles', [auth, mentorSwitch], async (req, res) => {
   try {
     const profiles = await MenteeProfile.find().populate('user', ['username', 'role', 'avatar']);
 
@@ -57,7 +57,7 @@ router.get('/', [auth, mentorSwitch], async (req, res) => {
 // @route   GET api/profiles
 // @desc    GET all mentor profiles
 // @access  Private
-router.get('/', [auth, mentorSwitch], async (req, res) => {
+router.get('/mentor-profiles', [auth, mentorSwitch], async (req, res) => {
   try {
     const profiles = await MentorProfile.find().populate('user', ['username', 'role', 'avatar']);
 
@@ -77,7 +77,7 @@ router.get('/', [auth, mentorSwitch], async (req, res) => {
 // @route   GET api/profiles
 // @desc    GET all partner profiles
 // @access  Private
-router.get('/', [auth, mentorSwitch], async (req, res) => {
+router.get('/partner-profiles', [auth, mentorSwitch], async (req, res) => {
   try {
     const profiles = await PartnerProfile.find().populate('user', ['username', 'role', 'avatar']);
 
@@ -95,14 +95,57 @@ router.get('/', [auth, mentorSwitch], async (req, res) => {
 });
 
 // @route   GET api/profiles
-// @desc    GET profile by id
+// @desc    GET  Mentee profile by id
 // @access  Private
 router.get('/user/:user_id', [auth, mentorSwitch], async (req, res) => {
   try {
     const profile = await MenteeProfile.findOne({ user: req.params.user_id }).populate('user', ['username', 'role', 'avatar']);
 
     // check if no profiles
-    // Might have no effect in backend
+    if (!profile) {
+      return res.status(400).json({ msg: 'Profile not found' });
+    }
+    // return profiles
+    return res.json(profile);
+  } catch (error) {
+    console.error(error.message);
+    if (error.kind === 'ObjectId') {
+      return res.status(400).json({ msg: 'Profile not found' });
+    }
+    return res.status(500).json({ msg: 'This is our fault not yours' });
+  }
+});
+
+// @route   GET api/profiles
+// @desc    GET  Mentor profile by id
+// @access  Private
+router.get('/user/:user_id', [auth, mentorSwitch], async (req, res) => {
+  try {
+    const profile = await MentorProfile.findOne({ user: req.params.user_id }).populate('user', ['username', 'role', 'avatar']);
+
+    // check if no profiles
+    if (!profile) {
+      return res.status(400).json({ msg: 'Profile not found' });
+    }
+    // return profiles
+    return res.json(profile);
+  } catch (error) {
+    console.error(error.message);
+    if (error.kind === 'ObjectId') {
+      return res.status(400).json({ msg: 'Profile not found' });
+    }
+    return res.status(500).json({ msg: 'This is our fault not yours' });
+  }
+});
+
+// @route   GET api/profiles
+// @desc    GET  Partner profile by id
+// @access  Private
+router.get('/user/:user_id', [auth, mentorSwitch], async (req, res) => {
+  try {
+    const profile = await PartnerProfile.findOne({ user: req.params.user_id }).populate('user', ['username', 'role', 'avatar']);
+
+    // check if no profiles
     if (!profile) {
       return res.status(400).json({ msg: 'Profile not found' });
     }

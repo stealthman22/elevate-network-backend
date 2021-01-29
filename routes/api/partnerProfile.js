@@ -99,7 +99,53 @@ router.get('/mentee-profiles', [auth, menteeSwitch], async (req, res) => {
 // @access  Private
 router.get('/user/:user_id', [auth, menteeSwitch], async (req, res) => {
   try {
-    const profile = await PartnerProfile.findOne({ user: req.params.user_id }).populate('user', ['username', 'profilePic']);
+    const profile = await PartnerProfile.findOne({ user: req.params.user_id }).populate('user', ['username', 'role', 'avatar']);
+
+    // check if no profiles
+    // Might have no effect in backend
+    if (!profile) {
+      return res.status(400).json({ msg: 'Profile not found' });
+    }
+    // return profiles
+    return res.json(profile);
+  } catch (error) {
+    console.error(error.message);
+    if (error.kind === 'ObjectId') {
+      return res.status(400).json({ msg: 'Profile not found' });
+    }
+    return res.status(500).json({ msg: 'This is our fault not yours' });
+  }
+});
+
+// @route   GET api/profiles
+// @desc    GET mentee profile by id
+// @access  Private
+router.get('/user/:user_id', [auth, menteeSwitch], async (req, res) => {
+  try {
+    const profile = await MenteeProfile.findOne({ user: req.params.user_id }).populate('user', ['username', 'role', 'avatar']);
+
+    // check if no profiles
+    // Might have no effect in backend
+    if (!profile) {
+      return res.status(400).json({ msg: 'Profile not found' });
+    }
+    // return profiles
+    return res.json(profile);
+  } catch (error) {
+    console.error(error.message);
+    if (error.kind === 'ObjectId') {
+      return res.status(400).json({ msg: 'Profile not found' });
+    }
+    return res.status(500).json({ msg: 'This is our fault not yours' });
+  }
+});
+
+// @route   GET api/profiles
+// @desc    GET mentor profile by id
+// @access  Private
+router.get('/user/:user_id', [auth, menteeSwitch], async (req, res) => {
+  try {
+    const profile = await MentorProfile.findOne({ user: req.params.user_id }).populate('user', ['username', 'role', 'avatar']);
 
     // check if no profiles
     // Might have no effect in backend
