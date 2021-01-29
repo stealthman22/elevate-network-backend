@@ -37,7 +37,7 @@ router.get('/me', [auth, menteeSwitch], async (req, res) => {
 // @route   GET api/profiles
 // @desc    GET all  partner profiles
 // @access  Private
-router.get('/', [auth, menteeSwitch], async (req, res) => {
+router.get('/partner-profiles', [auth, menteeSwitch], async (req, res) => {
   try {
     const profiles = await PartnerProfile.find().populate('user', ['username', 'role', 'avatar']);
 
@@ -57,7 +57,7 @@ router.get('/', [auth, menteeSwitch], async (req, res) => {
 // @route   GET api/profiles
 // @desc    GET all  Mentor profiles
 // @access  Private
-router.get('/', [auth, menteeSwitch], async (req, res) => {
+router.get('/mentor-profiles', [auth, menteeSwitch], async (req, res) => {
   try {
     const profiles = await MentorProfile.find().populate('user', ['username', 'role', 'avatar']);
 
@@ -77,7 +77,7 @@ router.get('/', [auth, menteeSwitch], async (req, res) => {
 // @route   GET api/profiles
 // @desc    GET all  Menteeprofiles
 // @access  Private
-router.get('/', [auth, menteeSwitch], async (req, res) => {
+router.get('/mentee-profiles', [auth, menteeSwitch], async (req, res) => {
   try {
     const profiles = await MenteeProfile.find().populate('user', ['username', 'role', 'avatar']);
 
