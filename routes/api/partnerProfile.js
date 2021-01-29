@@ -12,8 +12,8 @@ const menteeSwitch = require('../../middleware/menteeProfileMiddleware');
 
 // db collections
 const PartnerProfile = require('../../models/PartnerProfile');
-// const MentorProfile = require('../../models/MentorProfile');
-// const MenteeProfile = require('../../models/MenteeProfile');
+const MentorProfile = require('../../models/MentorProfile');
+const MenteeProfile = require('../../models/MenteeProfile');
 const User = require('../../models/User');
 
 // @route   GET api/PartnerProfile/me
@@ -35,14 +35,54 @@ router.get('/me', [auth, menteeSwitch], async (req, res) => {
 });
 
 // @route   GET api/profiles
-// @desc    GET all profiles
+// @desc    GET all  partner profiles
 // @access  Private
 router.get('/', [auth, menteeSwitch], async (req, res) => {
   try {
-    const profiles = await User.find().populate('user', ['username', 'role', 'avatar']);
+    const profiles = await PartnerProfile.find().populate('user', ['username', 'role', 'avatar']);
 
     // check if no profiles
     // Might have no effect in backend
+    if (!profiles) {
+      return res.status(400).json({ msg: 'There are no profiles yet' });
+    }
+    // return profiles
+    return res.json(profiles);
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ msg: 'This is our fault not yours' });
+  }
+});
+
+// @route   GET api/profiles
+// @desc    GET all  Mentor profiles
+// @access  Private
+router.get('/', [auth, menteeSwitch], async (req, res) => {
+  try {
+    const profiles = await MentorProfile.find().populate('user', ['username', 'role', 'avatar']);
+
+    // check if no profiles
+    // Might have no effect in backend
+    if (!profiles) {
+      return res.status(400).json({ msg: 'There are no profiles yet' });
+    }
+    // return profiles
+    return res.json(profiles);
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ msg: 'This is our fault not yours' });
+  }
+});
+
+// @route   GET api/profiles
+// @desc    GET all  Menteeprofiles
+// @access  Private
+router.get('/', [auth, menteeSwitch], async (req, res) => {
+  try {
+    const profiles = await MenteeProfile.find().populate('user', ['username', 'role', 'avatar']);
+
+    // check if no profiles
+    // Might have no effect in backendtor
     if (!profiles) {
       return res.status(400).json({ msg: 'There are no profiles yet' });
     }

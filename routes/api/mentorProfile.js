@@ -12,6 +12,8 @@ const partnerSwitch = require('../../middleware/partnerProfileMiddleware');
 
 // db collections
 const MentorProfile = require('../../models/MentorProfile');
+const PartnerProfile = require('../../models/PartnerProfile');
+const MenteeProfile = require('../../models/MenteeProfile');
 const User = require('../../models/User');
 
 // @route   GET api/mentorProfile/me
@@ -34,11 +36,51 @@ router.get('/me', [auth, partnerSwitch], async (req, res) => {
 module.exports = router;
 
 // @route   GET api/profiles
-// @desc    GET all profiles
+// @desc    GET all Mentor profiles
 // @access  Private
 router.get('/', [auth, partnerSwitch], async (req, res) => {
   try {
-    const profiles = await MentorProfile.find().populate('user', ['username']);
+    const profiles = await MentorProfile.find().populate('user', ['username', 'role', 'avatar']);
+
+    // check if no profiles
+    // Might have no effect in backend
+    if (!profiles) {
+      return res.status(400).json({ msg: 'There are no profiles yet' });
+    }
+    // return profiles
+    return res.json(profiles);
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ msg: 'This is our fault not yours' });
+  }
+});
+
+// @route   GET api/profiles
+// @desc    GET all Mentee profiles
+// @access  Private
+router.get('/', [auth, partnerSwitch], async (req, res) => {
+  try {
+    const profiles = await MenteeProfile.find().populate('user', ['username', 'role', 'avatar']);
+
+    // check if no profiles
+    // Might have no effect in backend
+    if (!profiles) {
+      return res.status(400).json({ msg: 'There are no profiles yet' });
+    }
+    // return profiles
+    return res.json(profiles);
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ msg: 'This is our fault not yours' });
+  }
+});
+
+// @route   GET api/profiles
+// @desc    GET all Partner profiles
+// @access  Private
+router.get('/', [auth, partnerSwitch], async (req, res) => {
+  try {
+    const profiles = await PartnerProfile.find().populate('user', ['username', 'role', 'avatar']);
 
     // check if no profiles
     // Might have no effect in backend
@@ -58,7 +100,7 @@ router.get('/', [auth, partnerSwitch], async (req, res) => {
 // @access  Private
 router.get('/user/:user_id', [auth, partnerSwitch], async (req, res) => {
   try {
-    const profile = await MentorProfile.findOne({ user: req.params.user_id }).populate('user', ['username', 'profilePic']);
+    const profile = await MentorProfile.findOne({ user: req.params.user_id }).populate('user', ['username', 'role', 'avatar']);
 
     // check if no profiles
     // Might have no effect in backend
