@@ -25,12 +25,7 @@ const MentorProfileSchema = new mongoose.Schema({
       required: true,
     },
     dob: {
-      // be sure how to represent this in mongoDb
       type: Date,
-
-    },
-    profilePic: {
-      type: String,
     },
   },
   interests: {
