@@ -37,13 +37,13 @@ async (req, res) => {
     // check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json([{ msg: 'Invalid Credentials' }]);
+      return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] });
     }
     // compare user pswd against db's
     const isPwdMatch = await bcrypt.compare(password, user.password);
     //    if ispwdmatch fails
     if (!isPwdMatch) {
-      return res.status(400).json({ msg: 'Invalid Credentials' });
+      return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] });
     }
 
     // if ispwdmatch passes
