@@ -1,4 +1,7 @@
 const express = require('express');
+const nodemailer = require('nodemailer');
+const sendgridTransport = require('nodemailer-sendgrid-transport');
+const crypto = require('crypto');
 
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
@@ -7,6 +10,16 @@ const jwt = require('jsonwebtoken');
 const config = require('config');
 const User = require('../../models/User');
 const auth = require('../../middleware/authMiddleware');
+
+// initialize nodemailer
+
+const transporter = nodemailer.createTransport(sendgridTransport(
+  {
+    auth: {
+      api_key: config.get('sendgridApi'),
+    },
+  },
+));
 
 // @route    GET api/auth
 // @desc     Get user object
@@ -66,5 +79,67 @@ async (req, res) => {
     res.status(500).send('Server Error');
   }
 });
+
+// forgot password route
+router.post('/reset-password', (req, res) => {
+  crypto.randomBytes(32, (err, buffer) => {
+    if (err) {
+      console.log(err);
+    }
+    const token = buffer.toString('hex');
+    User.findOne({ email: req.body.email })
+      .then((user) => {
+        if (!user) {
+          return res.status(400).json({ error: 'Invalid Credentials' });
+        }
+        user.resetToken = token;
+        user.expireToken = Date.now() + 3600000;
+        user.save().then((result) => {
+          transporter.sendMail({
+            to: user.email,
+            from: 'support@elevatenetworkhq.com',
+            subject: 'password reset',
+            html: `
+                      <p>You requested for a Password reset on your Elevate Account</p>
+                      <h5>Click on this  <a href="http://localhost:3000/reset/${token}">link </a> to reset password</h5>
+                      `,
+          });
+          res.json({ message: 'check email' });
+        });
+      });
+  });
+});
+
+// router.post('/reset-password', [check('email', 'Please enter a valid email').isEmail()],
+//   async (res, req) => {
+//     try {
+//       crypto.randomBytes(32, async (err, buffer) => {
+//         if (err) {
+//           console.log(err);
+//         }
+//         const token = buffer.toString('hex');
+//         const user = await User.findOne({ email: req.body.email });
+//         if (!user) {
+//           return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] });
+//         }
+//         user.resetToken = token;
+//         user.expireToken = Date.now() + 3600000;
+//         await user.save();
+//         transporter.sendMail({
+//           to: user.email,
+//           from: 'support@elevatenetworkhq.com',
+//           subject: 'password reset',
+//           html: `
+//           <p>You requested for a Password reset on your Elevate Account</p>
+//           <h5>Click on this  <a href="http://localhost:3000/reset/${token}">link </a> to reset password</h5>
+//           `,
+//         });
+//         res.json({ message: 'Check your email for reset link' });
+//       });
+//     } catch (error) {
+//       console.error(error.message);
+//       res.status(500).send('Server Error');
+//     }
+//   });
 
 module.exports = router;

@@ -1,4 +1,5 @@
 {
     "mongoURI" : "mongodb://localhost/elevateNetworkHq",
-    "jwtSecret":  "SilentEntry5000"
+    "jwtSecret":  "SilentEntry5000",
+    "sendgridApi": "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"
 }
