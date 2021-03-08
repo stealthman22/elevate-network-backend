@@ -102,9 +102,10 @@ router.post('/reset-password', (req, res) => {
             html: `
                       <p>You requested for a Password reset on your Elevate Account</p>
                       <h5>Click on this  <a href="http://localhost:3000/reset/${token}">link </a> to reset password</h5>
+                      <footer>Please this is an automated mail, do not reply to.</footer>
                       `,
           });
-          res.json({ message: 'check email' });
+          res.json({ message: 'check your email' });
         });
       });
   });
