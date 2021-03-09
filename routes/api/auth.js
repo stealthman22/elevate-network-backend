@@ -80,7 +80,10 @@ async (req, res) => {
   }
 });
 
-// forgot password route
+// @route   Post api/auth
+// @desc    forgot password route
+// @access  Public
+
 router.post('/reset-password', [check('email', 'Please enter a valid email').isEmail()], (req, res) => {
   crypto.randomBytes(32, (err, buffer) => {
     if (err) {
@@ -101,13 +104,66 @@ router.post('/reset-password', [check('email', 'Please enter a valid email').isE
             subject: 'password reset',
             html: `
                       <p>You requested for a Password reset on your Elevate Account</p>
-                      <h5>Click on this  <a href="http://localhost:3000/reset/${token}">link </a> to reset password</h5>
+                      <h5>Click on this  <a href="http://localhost:3000/reset-password/${token}">link </a> to reset password</h5>
                       <footer>Please this is an automated mail, do not reply to.</footer>
                       `,
           });
           res.json({ msg: 'Check your email ' });
         });
+      }).catch((error) => {
+        console.log(error);
+        res.status(500).send('Server Error');
       });
+  });
+});
+
+// @route   Post api/auth
+// @desc    set new password route
+// @access  Public
+// router.post('/new-password', [check('password', 'Please enter a password of not less than 8 characters').isLength({ min: 8 })],
+//   async (res, req) => {
+//     try {
+//       const newPassword = req.body.password;
+//       const sentToken = req.body.token;
+//       const user = await User.findOne({ resetToken: sentToken, expireToken: { $gt: Date.now() } });
+//       console.log('This is what the user object in db looks like', user);
+//       if (!user) {
+//         return res.status(400).json({ errors: [{ msg: 'Try again token expired' }] });
+//       }
+//       const salt = await bcrypt.genSalt(10);
+//       const hashedPassword = await bcrypt.hash(newPassword, salt);
+//       user.password = hashedPassword;
+//       user.resetToken = undefined;
+//       user.expireToken = undefined;
+//       await user.save();
+//       res.json({ msg: 'Password Successfully Updated ' });
+//     } catch (error) {
+//       console.error(error.message);
+//       res.status(500).send('Server Error');
+//     }
+//   });
+
+router.post('/new-password', (req, res) => {
+  const newPassword = req.body.password;
+  const sentToken = req.body.token;
+  console.log(sentToken);
+  User.findOne({
+    resetToken: sentToken,
+  }).then((user) => {
+    if (!user) {
+      return res.status(400).json({ errors: [{ msg: 'Try again, Session expired' }] });
+    }
+    bcrypt.hash(newPassword, 10).then((hashedPassword) => {
+      user.password = newPassword;
+      user.resetToken = undefined;
+      user.expireToken = undefined;
+      user.save().then((savedUser) => {
+        res.json({ msg: 'Password Update Successful' });
+      });
+    });
+  }).catch((err) => {
+    console.log(err);
+    res.status(500).send('Server Error');
   });
 });
 
