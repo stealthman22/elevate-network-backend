@@ -81,7 +81,7 @@ async (req, res) => {
 });
 
 // forgot password route
-router.post('/reset-password', (req, res) => {
+router.post('/reset-password', [check('email', 'Please enter a valid email').isEmail()], (req, res) => {
   crypto.randomBytes(32, (err, buffer) => {
     if (err) {
       console.log(err);
@@ -90,7 +90,7 @@ router.post('/reset-password', (req, res) => {
     User.findOne({ email: req.body.email })
       .then((user) => {
         if (!user) {
-          return res.status(400).json({ error: 'Invalid Credentials' });
+          return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] });
         }
         user.resetToken = token;
         user.expireToken = Date.now() + 3600000;
@@ -105,7 +105,7 @@ router.post('/reset-password', (req, res) => {
                       <footer>Please this is an automated mail, do not reply to.</footer>
                       `,
           });
-          res.json({ message: 'check your email' });
+          res.json({ msg: 'Check your email ' });
         });
       });
   });
