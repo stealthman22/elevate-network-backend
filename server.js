@@ -3,7 +3,7 @@ const connectDB = require('./config/db');
 
 const app = express();
 
-// connect db`
+// connect db
 connectDB();
 
 // bodyparser for request and body validation
