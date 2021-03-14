@@ -20,6 +20,15 @@ const UserSchema = new mongoose.Schema({
     enum: ['Mentee', 'Mentor', 'Partner'],
     required: true,
   },
+  avatar: {
+    type: String,
+  },
+  resetToken: {
+    type: String,
+  },
+  expireToken: {
+    type: Date,
+  },
   dateCreated: {
     type: Date,
     default: Date.now,

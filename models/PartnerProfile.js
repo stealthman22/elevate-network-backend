@@ -41,7 +41,23 @@ const PartnerProfileSchema = new mongoose.Schema({
 
     },
   },
-
+  social: {
+    youtube: {
+      type: String,
+    },
+    facebook: {
+      type: String,
+    },
+    linkedin: {
+      type: String,
+    },
+    Instagram: {
+      type: String,
+    },
+    twitter: {
+      type: String,
+    },
+  },
   education: [
     {
       school: {
