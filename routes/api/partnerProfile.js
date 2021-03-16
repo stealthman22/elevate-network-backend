@@ -216,7 +216,8 @@ async (req, res) => {
   }
 
   if (sponsoringInterests) {
-    profileFields.interests.sponsoringInterests = sponsoringInterests.split(',').map((sponsoringInterest) => sponsoringInterest.trim());
+    profileFields.interests.sponsoringInterests = sponsoringInterests.split(',')
+      .map((sponsoringInterest) => sponsoringInterest.trim());
   }
 
   // Social object
